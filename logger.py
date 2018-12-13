@@ -9,7 +9,7 @@ class Logger(object):
     def __init__(self, file_name):
         # TODO:  Finish this initialization method. The file_name passed should be the
         # full file name of the file that the logs will be written to.
-        self.file_name = None
+        self.file_name = file_name
 
     def write_metadata(self, pop_size, vacc_percentage, virus_name, mortality_rate,
                        basic_repro_num):
@@ -40,7 +40,12 @@ class Logger(object):
         # represent all the possible edge cases. Use the values passed along with each person,
         # along with whether they are sick or vaccinated when they interact to determine
         # exactly what happened in the interaction and create a String, and write to your logfile.
-        pass
+        # Did infect is a tuple with Bool at index 0 and String at index 1
+        with open(self.file_name, 'a') as out:
+            if did_infect[0]:
+                out.write('{} infects {}\n'.format(person.ID, random_person.ID))
+            else:
+                out.write("{} didn't infect {} because {}\n".format(person.ID, random_person.ID, did_infect[1]))
 
     def log_infection_survival(self, person, did_die_from_infection):
         ''' The Simulation object uses this method to log the results of every
