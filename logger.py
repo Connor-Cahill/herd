@@ -41,11 +41,12 @@ class Logger(object):
         # along with whether they are sick or vaccinated when they interact to determine
         # exactly what happened in the interaction and create a String, and write to your logfile.
         # Did infect is a tuple with Bool at index 0 and String at index 1
-        with open(self.file_name, 'a') as out:
-            if did_infect[0]:
-                out.write('{} infects {}\n'.format(person.ID, random_person.ID))
+        with open(self.file_name, 'a+') as out:
+            if did_infect:
+                out.write('{} infects {}\n'.format(person._id, random_person._id))
             else:
-                out.write("{} didn't infect {} because {}\n".format(person.ID, random_person.ID, did_infect[1]))
+                reason = 'vaccinated' if random_person_vacc else 'already sick' if random_person_sick else 'got lucky'
+                out.write("{} didn't infect {} because {}\n".format(person._id, random_person._id, reason))
 
     def log_infection_survival(self, person, did_die_from_infection):
         ''' The Simulation object uses this method to log the results of every
@@ -57,9 +58,13 @@ class Logger(object):
         # TODO: Finish this method. If the person survives, did_die_from_infection
         # should be False.  Otherwise, did_die_from_infection should be True.
         # Append the results of the infection to the logfile
-        pass
+        with open(self.file_name, 'a+') as out:
+            if did_die_from_infection:
+                out.write('{} died from infection\n'.format(person._id))
+            else:
+                out.write('{} survived infection\n'.format(person._id))
 
-    def log_time_step(self, time_step_number):
+    def log_time_step(self, time_step_number, newlyInfected, killed, totalInfected, totalDead):
         ''' STRETCH CHALLENGE DETAILS:
 
         If you choose to extend this method, the format of the summary statistics logged
@@ -77,4 +82,5 @@ class Logger(object):
         # TODO: Finish this method. This method should log when a time step ends, and a
         # new one begins.
         # NOTE: Here is an opportunity for a stretch challenge!
-        pass
+        with open(self.file_name, 'a+') as out:
+            out.write('Round {}: {} people became infected and {} people died. There are {} total infected people, and {} total people dead.\nBeginning new time step:\n'.format(time_step_number, newlyInfected, killed, totalInfected, totalDead))
