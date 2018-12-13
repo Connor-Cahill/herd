@@ -37,7 +37,7 @@ class Simulation(object):
         # At the end of each time step, call self._infect_newly_infected()
         # and then reset .newly_infected back to an empty list.
         self.logger = None
-        self.population = [] # List of Person objects
+        self.population = self._create_population() # List of Person objects
         self.pop_size = pop_size # Int
         self.next_person_id = 0 # Int
         self.virus = virus # Virus object
@@ -68,24 +68,21 @@ class Simulation(object):
 
         # Use the attributes created in the init method to create a population that has
         # the correct intial vaccination percentage and initial infected.
-        infected_count = 0
+        
         population = []
-        while len(population) < self.pop_size:
-            id = len(population) + 1
-            if infected_count < self.initial_infected:
-
-                new_infected_person = Person(id, False, self.virus)
-                population.append(new_infected_person)
+        for _id in range(len(self.pop_size)):
+            # If we don't have enough infected people, set person to be infected
+            if self.total_infected < self.initial_infected:
+                person = Person(_id, False, self.virus)
                 self.total_infected += 1
-                infected_count += 1
-            else: 
-                if random.random() > self.vacc_percentage:
-                    new_vacc_person = Person(id, True,  None)
-                    population.append(new_vacc_person)
-                else:
-                    new_unvac_person = Person(id, False, None)
-                    population.append(new_unvac_person)
+            # They are not infected
+            else:
+                # Randomly choose where or not they are vaccinated
+                vaccinated = random.random() > self.vacc_percentage
+                person = Person(_id, vaccinated, None)
+            population.append(person)
         return population
+
             
 
 
@@ -101,13 +98,23 @@ class Simulation(object):
                 bool: True for simulation should continue, False if it should end.
         '''
         # TODO: Complete this helper method.  Returns a Boolean.
+        everyonesDead = True
+        everyonesVaccinated = True
+
         for person in self.population:
-            if not person.is_alive:
-                self.total_dead += 1
-        if len(self.population) - self.total_dead < 1:
-            print('Everyone is dead. Sim Over')
-            return False
-        return True
+            if person.is_alive:
+                everyonesDead = False
+            if not person.is_vaccinated:
+                everyonesVaccinated = False
+
+        return everyonesVaccinated or everyonesVaccinated
+        # for person in self.population:
+        #     if not person.is_alive:
+        #         self.total_dead += 1
+        # if len(self.population) - self.total_dead < 1:
+        #     print('Everyone is dead. Sim Over')
+        #     return False
+        # return True
 
 
     def run(self):
@@ -122,10 +129,9 @@ class Simulation(object):
         # HINT: You may want to call the logger's log_time_step() method at the end of each time step.
         # TODO: Set this variable using a helper
         time_step_counter = 0
-        should_continue = self._simulation_should_continue
-            
 
-        while should_continue:
+        while self._simulation_should_continue():
+            self.time_step()
         # TODO: for every iteration of this loop, call self.time_step() to compute another
         # round of this simulation.
         print('The simulation has ended after {time_step_counter} turns.'.format(time_step_counter))
@@ -171,7 +177,19 @@ class Simulation(object):
             #     Simulation object's newly_infected array, so that their .infected
             #     attribute can be changed to True at the end of the time step.
         # TODO: Calls logger method during this method.
-        pass
+        if random_person.is_vaccinated:
+            print('Person is vaccinated so nothing happens')
+        elif random_person.is_vaccinated == False and random_person.infection == None:
+            if random.random() <= self.virus.repro_rate:
+                self.newly_infected.append(random_person)
+                self.current_infected += 1 
+            else:
+                random_person.is_vaccinated = True
+                print('Person survived and is vaccinated now ')
+        elif random_person.infection != None:
+            print('Person is already infected so cannot be infected')
+
+
         
         
 
@@ -181,7 +199,14 @@ class Simulation(object):
         # TODO: Call this method at the end of every time step and infect each Person.
         # TODO: Once you have iterated through the entire list of self.newly_infected, remember
         # to reset self.newly_infected back to an empty list.
-        pass
+        if len(self.newly_infected) > 0:
+            for person in self.newly_infected:
+                person.infection = self.virus
+                
+                self.total_infected += 1
+
+        self.newly_infected = []
+
 
 
 if __name__ == "__main__":
