@@ -50,7 +50,7 @@ class Simulation(object):
             virus_name, population_size, vacc_percentage, initial_infected)
         self.newly_infected = []
 
-    def _create_population(self, initial_infected):
+    def _create_population(self):
         '''This method will create the initial population.
             Args:
                 initial_infected (int): The number of infected people that the simulation
@@ -68,7 +68,28 @@ class Simulation(object):
 
         # Use the attributes created in the init method to create a population that has
         # the correct intial vaccination percentage and initial infected.
-        while i < pop_size:
+        infected_count = 0
+        population = []
+        while len(population) < self.pop_size:
+            id = len(population) + 1
+            if infected_count < self.initial_infected:
+
+                new_infected_person = Person(id, False, self.virus)
+                population.append(new_infected_person)
+                self.total_infected += 1
+                infected_count += 1
+            else: 
+                if random.random() > self.vacc_percentage:
+                    new_vacc_person = Person(id, True,  None)
+                    population.append(new_vacc_person)
+                else:
+                    new_unvac_person = Person(id, False, None)
+                    population.append(new_unvac_person)
+        return population
+            
+
+
+
             
             
 
@@ -80,7 +101,14 @@ class Simulation(object):
                 bool: True for simulation should continue, False if it should end.
         '''
         # TODO: Complete this helper method.  Returns a Boolean.
-        pass
+        for person in self.population:
+            if not person.is_alive:
+                self.total_dead += 1
+        if len(self.population) - self.total_dead < 1:
+            print('Everyone is dead. Sim Over')
+            return False
+        return True
+
 
     def run(self):
         ''' This method should run the simulation until all requirements for ending
@@ -94,7 +122,8 @@ class Simulation(object):
         # HINT: You may want to call the logger's log_time_step() method at the end of each time step.
         # TODO: Set this variable using a helper
         time_step_counter = 0
-        should_continue = None
+        should_continue = self._simulation_should_continue
+            
 
         while should_continue:
         # TODO: for every iteration of this loop, call self.time_step() to compute another
@@ -141,8 +170,10 @@ class Simulation(object):
             #     than repro_rate, random_person's ID should be appended to
             #     Simulation object's newly_infected array, so that their .infected
             #     attribute can be changed to True at the end of the time step.
-        # TODO: Call slogger method during this method.
+        # TODO: Calls logger method during this method.
         pass
+        
+        
 
     def _infect_newly_infected(self):
         ''' This method should iterate through the list of ._id stored in self.newly_infected
