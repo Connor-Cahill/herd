@@ -26,6 +26,7 @@ class Person(object):
         Return a boolean value indicating whether they survived the infection.
         '''
         # Only called if infection attribute is not None.
+        #TIMO wrote this 
         if self.infection != None:
             if random.random() <= mortality_rate:
                 self.is_alive = False

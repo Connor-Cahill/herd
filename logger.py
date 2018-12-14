@@ -23,7 +23,13 @@ class Logger(object):
         # the 'a' mode to append a new log to the end, since 'w' overwrites the file.
         # NOTE: Make sure to end every line with a '/n' character to ensure that each
         # event logged ends up on a separate line!
-        pass
+        ##Peer programmed
+        data_log_text = "Data for the current {0} outbreak!\nPopulation Size: {1}\nVaccination Percentage: {2}\nVirus: {0}\nVirus' Mortality Rate: {3}\nBasic Reproduction Number: {4}".format(
+        virus_name, pop_size, vacc_percentage, mortality_rate, basic_repro_num)
+        print(self.file_name)
+        with open(self.file_name, "w+") as out:
+            out.write(data_log_text + "\n\n")
+
 
     def log_interaction(self, person, random_person, random_person_sick=None,
                         random_person_vacc=None, did_infect=None):
@@ -41,6 +47,8 @@ class Logger(object):
         # along with whether they are sick or vaccinated when they interact to determine
         # exactly what happened in the interaction and create a String, and write to your logfile.
         # Did infect is a tuple with Bool at index 0 and String at index 1
+
+        #TIMO wrote this
         with open(self.file_name, 'a+') as out:
             if did_infect:
                 out.write('{} infects {}\n'.format(person._id, random_person._id))
@@ -58,6 +66,7 @@ class Logger(object):
         # TODO: Finish this method. If the person survives, did_die_from_infection
         # should be False.  Otherwise, did_die_from_infection should be True.
         # Append the results of the infection to the logfile
+        #CONNOR Wrote this 
         with open(self.file_name, 'a+') as out:
             if did_die_from_infection:
                 out.write('{} died from infection\n'.format(person._id))
@@ -79,5 +88,6 @@ class Logger(object):
         The format of this log should be:
             "Time step {time_step_number} ended, beginning {time_step_number + 1}\n"
         '''
+        ##Connor Wrote this
         with open(self.file_name, 'a+') as out:
             out.write('Round {}: {} people became infected and {} people died. There are {} total infected people, and {} total people dead.\nBeginning new time step:\n'.format(time_step_number, newly_infected, killed, total_infected, total_dead))

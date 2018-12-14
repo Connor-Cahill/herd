@@ -85,6 +85,8 @@ class Simulation(object):
             Returns:
                 bool: True for simulation should continue, False if it should end.
         '''
+
+        ##TIMO wrote this
         everyones_dead = True
         everyones_vaccinated = True
         noones_infected = True
@@ -104,6 +106,8 @@ class Simulation(object):
         ''' This method should run the simulation until all requirements for ending
         the simulation are met.
         '''
+        #peer programmed
+        self.logger.write_metadata(self.pop_size, self.vacc_percentage, self.virus.name, self.mortality_rate, self.virus.repro_rate)
         time_step_counter = 1
 
         while self._simulation_should_continue():
@@ -127,6 +131,7 @@ class Simulation(object):
             3. Otherwise call simulation.interaction(person, random_person) and
                 increment interaction counter by 1.
             '''
+            ##Connor Wrote this 
         alive_people = [p for p in self.population if p.is_alive]
         infected_people = [p for p in alive_people if p.infection != None]
         newly_infected = 0
@@ -151,6 +156,7 @@ class Simulation(object):
             person1 (person): The initial infected person
             random_person (person): The person that person1 interacts with.
         '''
+        ##connor wrote this
         assert person.is_alive == True
         assert random_person.is_alive == True
 
@@ -174,6 +180,7 @@ class Simulation(object):
     def _infect_newly_infected(self):
         ''' This method should iterate through the list of ._id stored in self.newly_infected
         and update each Person object with the disease. '''
+        #CONNOR wrote this
         if len(self.newly_infected) > 0:
             for person in self.newly_infected:
                 person.infection = self.virus
