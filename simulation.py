@@ -200,8 +200,11 @@ if __name__ == "__main__":
     pop_size = int(params[3])
     vacc_percentage = float(params[4])
 
+
     if len(params) == 6:
         initial_infected = int(params[5])
+    else:
+        initial_infected = 1
 
     virus = Virus(virus_name, repro_num, mortality_rate)
     sim = Simulation(pop_size, vacc_percentage, virus, mortality_rate, initial_infected)
